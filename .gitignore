@@ -1,9 +1,5 @@
 .idea/
-LICENSE
-Procfile
-env/
 smarthome.iml
-system.properties
 figwheel_server.log
 /target
 /classes
