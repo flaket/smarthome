@@ -19,7 +19,8 @@
                  [compojure "1.3.3"]
                  [selmer "0.8.2"]
                  [environ "1.0.0"]
-                 [secretary "1.2.3"]]
+                 [secretary "1.2.3"]
+                 [quil "2.2.5" :exclusions [org.clojure/clojure]]]
 
   :plugins [[lein-cljsbuild "1.0.4"]
             [lein-environ "1.0.0"]
