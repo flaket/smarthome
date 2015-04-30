@@ -1,37 +1,36 @@
 (ns smarthome.data)
 
 (def state
-  {:rooms         [
-                   {:kitchen
-                    {:stove          {:active? false, :temp nil}
-                     :oven           {:active? false, :temp nil}
-                     :coffee-machine {:active? false}
-                     :lights         :off
-                     :temperature    {:current 20, :set-to 20}}}
-                   {:living-room
-                    {:lights      {:state :off, :value 0}
-                     :temperature {:current 20, :set-to 20}
-                     :tv          {}}}
-                   {:dining-room
-                    {:lights      {:state :off, :value 0}
-                     :temperature {:current 20, :set-to 20}}}
-                   {:bath-room
-                    {:lights      :off
-                     :temperature {:current 20, :set-to 20}
-                     :radio       {}}}
-                   {:hall
-                    {:lights      :off
-                     :temperature {:current 20, :set-to 20}}}
-                   {:bed-room
-                    {:lights      :off
-                     :temperature {:current 20, :set-to 20}}}
-                   {:garage
-                    {:lights      :off
-                     :temperature {:current 20, :set-to 20}}}
-                   {:driveway
-                    {:heat :off, :lights :off}}
-                   {:balcony
-                    {:lights :off}}]
+  {:rooms         [{:name           :kitchen
+                    :stove          {:active? false, :temp nil}
+                    :oven           {:active? false, :temp nil}
+                    :coffee-machine {:active? false}
+                    :lights         0
+                    :temperature    {:current 20, :set-to 20}}
+                   {:name        :livingroom
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}
+                    :tv          :off}
+                   {:name        :bathroom
+                    :door        :closed
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}
+                    :radio       :off}
+                   {:name        :hall
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}}
+                   {:name        :bedroom
+                    :door        :closed
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}}
+                   {:name        :garage
+                    :door        :closed
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}}
+                   {:name        :hall
+                    :door        :closed
+                    :lights      0
+                    :temperature {:current 20, :set-to 20}}]
    :time          nil
    :time-of-day   :morning
    :season        :spring

@@ -5,78 +5,79 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [cljsjs.react :as react]
-              [quil.core :as q :include-macros true]
               [smarthome.data :refer [state]])
     (:import goog.History))
 
-(def my-color (atom 200))
-(def bg (atom nil))
+;(set! (.-className (.-body js/document)) "winter")
+;(set! (.-className (.-body js/document)) "spring")
+(set! (.-className (.-body js/document)) "summer")
+;(set! (.-className (.-body js/document)) "autumn")
 
-#_(defn simple-house []
-  (js/background 245)
-  (js/fill @my-color)
-  (js/rect 50 50 150 150)
-  (js/rect 200 50 150 150)
-  (js/rect 200 200 150 150)
-  (js/rect 50 200 150 150)
-  (js/stroke @my-color)
-  (js/line 100 200 150 200)
-  (js/line 250 200 300 200)
-  (js/line 200 100 200 150)
-  (js/line 200 250 200 300))
-
-#_(defn setup []
-  (swap! bg assoc (js/loadImage "assets/snow.jpg"))
-  (js/createCanvas 640 480))
-
-#_(defn draw []
-  #_(js/image @bg 0 0)
-  #_(simple-house))
-
-#_(doto js/window
-  (aset "setup" setup)
-  (aset "draw" draw))
-
-(def color 50)
-
-(defn home-page []
-  [:div
-   [:div.container
-    [:canvas {:id "canvas"}]]])
-
-#_(def circles []
-  (q/stroke (q/random 255))             ;; Set the stroke colour to a random grey
-  (q/stroke-weight (q/random 10))       ;; Set the stroke thickness randomly
-  (q/fill (q/random 255))               ;; Set the fill colour to a random grey
-
-  (let [diam (q/random 100)             ;; Set the diameter to a value between 0 and 100
-        x    (q/random (q/width))       ;; Set the x coord randomly within the sketch
-        y    (q/random (q/height))]     ;; Set the y coord randomly within the sketch
-    (q/ellipse x y diam diam)))         ;; Draw a circle at x y with the correct diameter
-
-(def img (atom nil))
-(def size 200)
-
-(defn draw []
-  (q/image @img 0 0)
-  (q/fill 0)
-  (q/rect 200 200 size size))
-
-(defn setup []
-  (q/smooth)
-  (q/frame-rate 1)
-  (q/background 200)
-  (reset! img (q/load-image "../assets/snow.jpg")))
-
-(q/defsketch my-sketch
-             :host "canvas"
-             :setup setup
-             :draw draw
-             :size [640 480])
+(def my-state (atom state))
 
 ;; -------------------------
-(defn current-page []
-  [:div [(session/get :current-page)]])
+(defn home-page []
+  [:div.container
+   [:div.line
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]
+     [:img.small {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]]
+   [:div.line
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]]
+   [:div.line
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]
+    [:div.room
+     [:img.bedroom {:src "../assets/bedroom.jpg"}]]]])
+
+(defn kitchen-page []
+  [:div.container
+   [:div.line
+    [:div.room
+     [:img {:src "../assets/bedroom.jpg"}]]]])
+
+(defn livingroom-page []
+  [:div.container
+   [:div.row [:a {:href "#/"} "home"]]
+   [:div.row
+    [:div [:h2 "LIVINGROOM"]]]])
+
+(defn bedroom-page []
+  [:div.container
+   [:div.row [:a {:href "#/"} "home"]]
+   [:div.row
+    [:div [:h2 "BEDROOM"]]]])
+
+(defn hall-page []
+  [:div.container
+   [:div.row [:a {:href "#/"} "home"]]
+   [:div.row
+    [:div [:h2 "HALL"]]]])
+
+(defn bathroom-page []
+  [:div.container
+   [:div.row [:a {:href "#/"} "home"]]
+   [:div.row
+    [:div [:h2 "BATHROOM"]]]])
+
+(defn garage-page []
+  [:div.container
+   [:div.row [:a {:href "#/"} "home"]]
+   [:div.row
+    [:div [:h2 "GARAGE"]]]])
+
+#_(session/put! :current-page #'kitchen-page)
 
 ;; -------------------------
 ;; Routes
@@ -84,6 +85,19 @@
 
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
+(secretary/defroute "/kitchen" []
+                    (session/put! :current-page #'kitchen-page))
+(secretary/defroute "/livingroom" []
+                    (session/put! :current-page #'livingroom-page))
+(secretary/defroute "/bedroom" []
+                    (session/put! :current-page #'bedroom-page))
+(secretary/defroute "/hall" []
+                    (session/put! :current-page #'hall-page))
+(secretary/defroute "/bathroom" []
+                    (session/put! :current-page #'bathroom-page))
+(secretary/defroute "/garage" []
+                    (session/put! :current-page #'garage-page))
+
 
 ;; -------------------------
 ;; History
@@ -98,6 +112,9 @@
 
 ;; -------------------------
 ;; Initialize app
+(defn current-page []
+  [:div [(session/get :current-page)]])
+
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
 
