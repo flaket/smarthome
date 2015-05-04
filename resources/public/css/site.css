@@ -6,22 +6,20 @@ body {
   padding-bottom: 72px;
   -webkit-font-smoothing: antialiased;
   font-size: 1.125em;
+  background-color: #191919;
 }
 
-body.winter {
+body.clear {
+     background: url("../assets/clear.jpg") repeat;
+}
+body.rain {
+     background: url("../assets/rain.jpg") repeat;
+}
+body.snow {
      background: url("../assets/snow.jpg") repeat;
 }
-
-body.spring {
-     background: url("../assets/spring.jpg") repeat;
-}
-
-body.summer {
-     background: url("../assets/summer.jpg") repeat;
-}
-
-body.autumn {
-     background: url("../assets/autumn.jpg") repeat;
+body.cloudy {
+     background: url("../assets/cloudy.jpg") repeat;
 }
 
 .room {
@@ -33,7 +31,7 @@ body.autumn {
     position: relative;
 }
 
-.bedroom {
+.room-image {
     left: 0;
     top: 0;
     width: 100%;
@@ -41,10 +39,148 @@ body.autumn {
     position: relative;
 }
 
-.small {
+.dark {
+    opacity: 0.15;
+}
+
+.dim {
+    opacity: 0.6;
+}
+
+.tv {
     position: absolute;
-    left: 70px;
-    top: 30px;
+    left: 100px;
+    top: 133px;
+    width: 60%;
+    height: 45%;
+}
+
+.tv-off {
+    position: absolute;
+    left: 100px;
+    top: 133px;
+    width: 65%;
+    height: 45%;
+}
+
+.car {
+    position: absolute;
+    left: 50px;
+    top: 10px;
+    width: 60%;
+    height: 90%;
+}
+
+.fridge {
+    position: absolute;
+    left: 10px;
+    top: 175px;
+    width: 30%;
+    height: 30%;
+}
+
+.dish {
+    position: absolute;
+    left: 90px;
+    top: 175px;
+    width: 30%;
+    height: 30%;
+}
+
+.oven {
+    position: absolute;
+    left: 125px;
+    top: 10px;
     width: 20%;
     height: 20%;
+}
+
+.stove {
+    position: absolute;
+    left: 180px;
+    top: 80px;
+    width: 27%;
+    height: 27%;
+}
+
+.laundry {
+    position: absolute;
+    left: 90px;
+    top: 185px;
+    width: 50%;
+    height: 25%;
+}
+
+.wash {
+    position: absolute;
+    left: 10px;
+    top: 170px;
+    width: 30%;
+    height: 30%;
+}
+
+.radio-on {
+    position: absolute;
+    left: 180px;
+    top: 10px;
+    width: 26%;
+    height: 20%;
+}
+
+.radio-off {
+    position: absolute;
+    left: 217px;
+    top: 30px;
+    width: 11%;
+    height: 11%;
+}
+
+.front-door {
+    position: absolute;
+    left: 85px;
+    top: 237px;
+    width: 33%;
+    height: 5%;
+}
+
+.garage-port {
+    position: absolute;
+    left: 40px;
+    top: 240px;
+    width: 70%;
+    height: 5%;
+}
+
+.bedroom-door-closed {
+    position: absolute;
+    left: -5px;
+    top: 88px;
+    width: 4%;
+    height: 33%;
+}
+
+.bedroom-door-open {
+    position: absolute;
+    left: -5px;
+    top: 88px;
+    width: 4%;
+    height: 33%;
+    transform: translate(28px,-7px) rotate(-45deg);
+}
+
+.bathroom-door-closed {
+    position: absolute;
+    left: -3px;
+    top: 85px;
+    width: 4%;
+    height: 33%;
+}
+
+.bathroom-door-open {
+    position: absolute;
+    left: -3px;
+    top: 85px;
+    width: 4%;
+    height: 33%;
+    transform: translate(28px,-7px) rotate(-45deg);
 }

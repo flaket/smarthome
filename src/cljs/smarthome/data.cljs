@@ -32,7 +32,7 @@
                     :lights      0
                     :temperature {:current 20, :set-to 20}}]
    :time          nil
-   :time-of-day   :morning
-   :season        :spring
+   :time-of-day   :morning                                  ;morning/day/evening/night
+   :weather       :clear                                    ;clear/cloudy/rain/snow
    :user-location {:indoor :kitchen, :coordinates [63.433639 10.392072]}
    :user-profile  {}})
