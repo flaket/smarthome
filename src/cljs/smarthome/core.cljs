@@ -52,21 +52,49 @@
 
 (def state (atom initial-state))
 
-(def dish-on false)
+(def dish-on true)
 (def oven-on true)
 (def stove-on true)
 (def tv-on true)
-(def radio-on false)
+(def radio-on true)
 (def wash-on true)
 (def car-in true)
-(def bath-door-open false)
-(def bed-door-open false)
+(def bath-door-open true)
+(def bed-door-open true)
 (def front-door-open false)
 (def livingroom-lights-off false)
-(def bathroom-lights-off true)
-(def bedroom-lights-off true)
+(def bathroom-lights-off false)
+(def bedroom-lights-off false)
 (def garage-lights-off false)
-(def garage-door-closed false)
+(def garage-door-closed true)
+
+(def imgs {:living-nw "../assets/livingroom-nw.jpg"
+           :living-ne "../assets/livingroom-ne.jpg"
+           :living-sw "../assets/livingroom-sw.jpg"
+           :living-se "../assets/livingroom-se.jpg"
+           :kitchen "../assets/kitchen.jpg"
+           :bathroom "../assets/bathroom.jpg"
+           :garage "../assets/garage.jpg"
+           :hall "../assets/hall.jpg"
+           :bedroom "../assets/bedroom.jpg"
+           :fridge "../assets/fridge.jpg"
+           :dish-on "../assets/dish-on.jpg"
+           :dish-off "../assets/dish-off.jpg"
+           :oven-on "../assets/oven-on.jpg"
+           :oven-off "../assets/oven-off.jpg"
+           :stove-on "../assets/stove-on.jpg"
+           :stove-off "../assets/stove-off.jpg"
+           :tv-on "../assets/tv-on.jpg"
+           :tv-off "../assets/tv-off.jpg"
+           :radio-on "../assets/radio-on.jpg"
+           :radio-off "../assets/radio-off.jpg"
+           :door "../assets/door.jpg"
+           :laundry "../assets/laundry.jpg"
+           :wash-on "../assets/wash-on.jpg"
+           :car "../assets/car.jpg"
+           :garage-port "../assets/garageport.jpg"
+           :frontdoor-closed "../assets/front-door-closed.jpg"
+           :frontdoor-open "../assets/front-door-open.jpg"})
 
 ;; -------------------------
 (defn home-page []
@@ -74,53 +102,54 @@
    [:div.line
     ; LIVINGROOM-NW
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/livingroom-nw.jpg"}]]
+     [:img.room-image {:src (:living-nw imgs)}]]
     ; LIVINGROOM-NE
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/livingroom-ne.jpg"}]]
+     [:img.room-image {:src (:living-ne imgs)}]]
     ; KITCHEN
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/kitchen.jpg"}]
-     [:img.fridge {:src "../assets/fridge.jpg"}]
-     (if dish-on [:img.dish {:src "../assets/dish-on.jpg"}]
-                 [:img.dish {:src "../assets/dish-off.jpg"}])
-     [:img.oven {:src "../assets/oven-off.jpg"}]
-     [:img.stove {:src "../assets/stove-off.jpg"}]]]
+     [:img.room-image {:src (:kitchen imgs)}]
+     [:img.fridge {:src (:fridge imgs)}]
+     (if dish-on [:img.dish {:src (:dish-on imgs)}]
+                 [:img.dish {:src (:dish-off imgs)}])
+     [:img.oven {:src (:oven-off imgs)}]
+     [:img.stove {:src (:stove-off imgs)}]]]
    [:div.line
     ; LIVINGROOM-SW
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/livingroom-sw.jpg"}]
-     [:img.tv {:src "../assets/tv-on.jpg"}]]
+     [:img.room-image {:src (:living-sw imgs)}]
+     [:img.tv {:src (:tv-on imgs)}]]
     ; LIVINGROOM-SE
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/livingroom-se.jpg"}]
-     (if radio-on [:img.radio-off {:src "../assets/radio-off.jpg"}]
-                  [:img.radio-on {:src "../assets/radio-on.jpg"}])]
+     [:img.room-image {:src (:living-se imgs)}]
+     (if radio-on [:img.radio-on {:src (:radio-on imgs)}]
+                  [:img.radio-off {:src (:radio-off imgs)}])]
     ; BATHROOM
     [:div {:className (str "room" (cond (and bath-door-open bathroom-lights-off) " dim"
                                         bathroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/bathroom.jpg"}]
+     [:img.room-image {:src (:bathroom imgs)}]
      [:img {:className (str "bathroom-door" (if bath-door-open "-open" "-closed"))
-            :src "../assets/door.jpg"}]
-     [:img.laundry {:src "../assets/laundry.jpg"}]
-     [:img.wash {:src "../assets/wash-on.jpg"}]]]
+            :src (:door imgs)}]
+     [:img.laundry {:src (:laundry imgs)}]
+     [:img.wash {:src (:wash-on imgs)}]]]
    [:div.line
     ; GARAGE
     [:div {:className (str "room" (when garage-lights-off " dark"))}
-     [:img.room-image {:src "../assets/garage.jpg"}]
-     (when car-in [:img.car {:src "../assets/car.jpg"}])
-     (when garage-door-closed [:img {:className "garage-port" :src "../assets/garageport.jpg"}])]
-    ; HALL
+     [:img.room-image {:src (:garage imgs)}]
+     (when car-in [:img.car {:src (:car imgs)}])
+     (when garage-door-closed [:img {:className "garage-port" :src (:garage-port imgs)}])]
+     ; HALL
     [:div {:className (str "room" (when livingroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/hall.jpg"}]
-     (if front-door-open [:img.front-door {:src "../assets/front-door-closed.jpg"}]
-                         [:img.front-door {:src "../assets/front-door-open.jpg"}])]
+     [:img.room-image {:src (:hall imgs)}]
+     (if front-door-open [:img.front-door {:src (:frontdoor-open imgs)}]
+                         [:img.front-door {:src (:frontdoor-closed imgs)}])]
     ; BEDROOM
     [:div {:className (str "room" (cond (and bed-door-open bedroom-lights-off) " dim"
                                         bedroom-lights-off " dark"))}
-     [:img.room-image {:src "../assets/bedroom.jpg"}]
+     [:img.room-image {:src (:bedroom imgs)}]
      [:img {:className (str "bedroom-door" (if bed-door-open "-open" "-closed"))
-            :src "../assets/door.jpg"}]]]])
+            :src (:door imgs)}]]]])
+
 (defn kitchen-page []
   [:div.container
    [:div.line
