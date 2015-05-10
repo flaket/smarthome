@@ -10,7 +10,7 @@
                                 :coffee-machine {:active? false, :brew-complete? false}
                                 :dish-washer    {:active? false, :time-remaining nil}
                                 :lights-off?    false}
-                   :bathroom   {:door-open?      false
+                   :bathroom   {:door-open?      true
                                 :lights-off?     false
                                 :washing-machine {:active? false, :time-remaining nil}
                                 :laundry         {:whites-full? false
@@ -22,14 +22,16 @@
                                 :temperature  {:current 20, :set-to 20}}
                    :hall       {:lights-off?        false
                                 :front-door-locked? true}
-                   :bedroom    {:door-open?  false
+                   :bedroom    {:door-open?  true
                                 :lights-off? false
                                 :temperature {:current 16, :set-to 16}}}
    :time          nil
    :time-of-day   :morning                                  ;morning/day/evening/night
    :weather       :clear                                    ;clear/cloudy/rain/snow
    :user-location {:indoor :kitchen, :coordinates [63.433639 10.392072]}
-   :user-profile  {}})
+   :user-profile  {}
+   :view :home                                              ;home/livingroom/kitchen/bathroom/bedroom/garage/hall/..
+   :simulation-running false})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
            :living-ne          "../assets/livingroom-ne.jpg"

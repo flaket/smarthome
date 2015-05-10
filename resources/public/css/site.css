@@ -9,12 +9,28 @@ body {
   background-color: #191919;
 }
 
+.nav {
+    font-size: 150%;
+    color: white;
+    width: 100%;
+    text-align: center;
+}
+
 .room {
     float: left;
     left: 0;
     top: 0;
     width: 250px;
     height: 250px;
+    position: relative;
+}
+
+.room-single {
+    float: left;
+    left: 0;
+    top: 0;
+    width: 750px;
+    height: 750px;
     position: relative;
 }
 
