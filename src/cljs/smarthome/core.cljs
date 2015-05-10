@@ -59,7 +59,10 @@
        [:img.radio-on {:src (:radio-on imgs)
                        :on-click #(swap! state assoc-in [:rooms :livingroom :radio-on?] false)}]
        [:img.radio-off {:src (:radio-off imgs)
-                        :on-click #(swap! state assoc-in [:rooms :livingroom :radio-on?] true)}])]
+                        :on-click #(swap! state assoc-in [:rooms :livingroom :radio-on?] true)}])
+     [:div {:on-click #(swap! state update-in [:rooms :livingroom :temperature :set-to] inc)}
+      [:div.temp (:current (:temperature (:livingroom (:rooms @state))))]
+      [:div.set-temp (:set-to (:temperature (:livingroom (:rooms @state))))]]]
     ; BATHROOM
     [:div {:className (str "room" (cond
                                     (and (:door-open? (:bathroom (:rooms @state)))
@@ -80,7 +83,10 @@
      [:img.lightswitch-bath {:src (:lightswitch-bath imgs)
                                :on-click #(if (:lights-off? (:bathroom (:rooms @state)))
                                            (swap! state assoc-in [:rooms :bathroom :lights-off?] false)
-                                           (swap! state assoc-in [:rooms :bathroom :lights-off?] true))}]]]
+                                           (swap! state assoc-in [:rooms :bathroom :lights-off?] true))}]
+     [:div {:on-click #(swap! state update-in [:rooms :bathroom :temperature :set-to] inc)}
+      [:div.temp (:current (:temperature (:bathroom (:rooms @state))))]
+      [:div.set-temp (:set-to (:temperature (:bathroom (:rooms @state))))]]]]
    [:div.line
     ; GARAGE
     [:div {:className (str "room" (when (:lights-off? (:garage (:rooms @state))) " dark"))}
@@ -117,7 +123,10 @@
      [:img.lightswitch-bed {:src (:lightswitch-bed imgs)
                             :on-click #(if (:lights-off? (:bedroom (:rooms @state)))
                                         (swap! state assoc-in [:rooms :bedroom :lights-off?] false)
-                                        (swap! state assoc-in [:rooms :bedroom :lights-off?] true))}]]]])
+                                        (swap! state assoc-in [:rooms :bedroom :lights-off?] true))}]
+     [:div {:on-click #(swap! state update-in [:rooms :bedroom :temperature :set-to] inc)}
+      [:div.temp (:current (:temperature (:bedroom (:rooms @state))))]
+      [:div.set-temp (:set-to (:temperature (:bedroom (:rooms @state))))]]]]])
 
 (defn kitchen-page []
   [:div.container

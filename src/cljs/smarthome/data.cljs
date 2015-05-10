@@ -9,8 +9,7 @@
                                 :oven           {:active? false, :temp nil}
                                 :coffee-machine {:active? false, :brew-complete? false}
                                 :dish-washer    {:active? false, :time-remaining nil}
-                                :lights-off?    false
-                                :temperature    {:current 20, :set-to 20}}
+                                :lights-off?    false}
                    :bathroom   {:door-open?      false
                                 :lights-off?     false
                                 :washing-machine {:active? false, :time-remaining nil}
@@ -22,11 +21,10 @@
                                 :lights-off?  false
                                 :temperature  {:current 20, :set-to 20}}
                    :hall       {:lights-off?        false
-                                :temperature        {:current 20, :set-to 20}
                                 :front-door-locked? true}
                    :bedroom    {:door-open?  false
                                 :lights-off? false
-                                :temperature {:current 20, :set-to 20}}}
+                                :temperature {:current 16, :set-to 16}}}
    :time          nil
    :time-of-day   :morning                                  ;morning/day/evening/night
    :weather       :clear                                    ;clear/cloudy/rain/snow
