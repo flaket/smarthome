@@ -47,6 +47,38 @@ body.cloudy {
     opacity: 0.6;
 }
 
+.lightswitch-living {
+    position: absolute;
+    left: 125px;
+    top: 125px;
+    width: 11%;
+    height: 11%;
+}
+
+.lightswitch-garage {
+     position: absolute;
+     left: 210px;
+     top: 30px;
+     width: 11%;
+     height: 11%;
+}
+
+.lightswitch-bath {
+    position: absolute;
+    left: 125px;
+    top: 125px;
+    width: 11%;
+    height: 11%;
+}
+
+.lightswitch-bed {
+    position: absolute;
+    left: 120px;
+    top: 120px;
+    width: 11%;
+    height: 11%;
+}
+
 .tv {
     position: absolute;
     left: 100px;
