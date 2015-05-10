@@ -29,10 +29,20 @@
      [:img.room-image {:src (:kitchen imgs)}]
      [:img.fridge {:src (:fridge imgs)}]
      (if (:active? (:dish-washer (:kitchen (:rooms @state))))
-       [:img.dish {:src (:dish-on imgs)}]
-       [:img.dish {:src (:dish-off imgs)}])
-     [:img.oven {:src (:oven-off imgs)}]
-     [:img.stove {:src (:stove-off imgs)}]]]
+       [:img.dish {:src      (:dish-on imgs)
+                   :on-click #(swap! state assoc-in [:rooms :kitchen :dish-washer :active?] false)}]
+       [:img.dish {:src (:dish-off imgs)
+                   :on-click #(swap! state assoc-in [:rooms :kitchen :dish-washer :active?] true)}])
+     (if (:active? (:oven (:kitchen (:rooms @state))))
+       [:img.oven {:src (:oven-on imgs)
+                   :on-click #(swap! state assoc-in [:rooms :kitchen :oven :active?] false)}]
+       [:img.oven {:src (:oven-off imgs)
+                   :on-click #(swap! state assoc-in [:rooms :kitchen :oven :active?] true)}])
+     (if (:active? (:stove (:kitchen (:rooms @state))))
+       [:img.stove {:src (:stove-on imgs)
+                    :on-click #(swap! state assoc-in [:rooms :kitchen :stove :active?] false)}]
+       [:img.stove {:src (:stove-off imgs)
+                    :on-click #(swap! state assoc-in [:rooms :kitchen :stove :active?] true)}])]]
    [:div.line
     ; LIVINGROOM-SW
     [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
@@ -63,8 +73,10 @@
             :src (:door imgs)}]
      [:img.laundry {:src (:laundry imgs)}]
      (if (:active? (:washing-machine (:bathroom (:rooms @state))))
-       [:img.wash {:src (:wash-on imgs)}]
-       [:img.wash {:src (:wash-off imgs)}])
+       [:img.wash {:src (:wash-on imgs)
+                   :on-click #(swap! state assoc-in [:rooms :bathroom :washing-machine :active?] false)}]
+       [:img.wash {:src (:wash-off imgs)
+                   :on-click #(swap! state assoc-in [:rooms :bathroom :washing-machine :active?] true)}])
      [:img.lightswitch-bath {:src (:lightswitch-bath imgs)
                                :on-click #(if (:lights-off? (:bathroom (:rooms @state)))
                                            (swap! state assoc-in [:rooms :bathroom :lights-off?] false)
