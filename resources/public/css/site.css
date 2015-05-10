@@ -6,7 +6,7 @@ body {
   padding-bottom: 72px;
   -webkit-font-smoothing: antialiased;
   font-size: 1.125em;
-  background-color: #191919;
+  background-color: #222222;
 }
 
 .nav {
@@ -135,6 +135,28 @@ body {
     height: 30%;
 }
 
+.dish-time {
+    position: absolute;
+    left: 115px;
+    top: 160px;
+    font-size: 100%;
+}
+
+.whites {
+    color: white;
+    position: absolute;
+    left: 120px;
+    top: 204px;
+    font-size: 120%;
+}
+
+.colors {
+    position: absolute;
+    left: 160px;
+    top: 204px;
+    font-size: 120%;
+}
+
 .oven {
     position: absolute;
     left: 125px;
@@ -165,6 +187,13 @@ body {
     top: 170px;
     width: 30%;
     height: 30%;
+}
+
+.wash-time {
+    position: absolute;
+    left: 37px;
+    top: 155px;
+    font-size: 100%;
 }
 
 .radio-on {
@@ -231,4 +260,13 @@ body {
     width: 4%;
     height: 33%;
     transform: translate(28px,-7px) rotate(-45deg);
+}
+
+.food {
+    color: rgb(200,200,200);
+    font-size: 120%;
+}
+
+.food-header {
+    font-size: 150%;
 }

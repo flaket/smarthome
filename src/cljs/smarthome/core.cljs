@@ -14,14 +14,17 @@
 (defn kitchen [s]
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
    [:img.room-image {:src (:kitchen imgs)}]
-   [:img.fridge {:src (:fridge imgs)}]
+   [:img.fridge {:src (:fridge imgs)
+                 :on-click #(swap! state assoc :view :food)}]
    (if (:active? (:dish-washer (:kitchen (:rooms @state))))
-     [:img.dish {:src      (:dish-on imgs)
-                 :on-click #(swap! state assoc-in [:rooms :kitchen :dish-washer :active?] false)}]
+     [:div
+      [:img.dish {:src      (:dish-on imgs)
+                       :on-click #(swap! state assoc-in [:rooms :kitchen :dish-washer :active?] false)}]
+      [:div.dish-time (str "0:" (:time-remaining (:dish-washer (:kitchen (:rooms @state)))))]]
      [:img.dish {:src (:dish-off imgs)
                  :on-click #(swap! state assoc-in [:rooms :kitchen :dish-washer :active?] true)}])
    (if (:active? (:oven (:kitchen (:rooms @state))))
-     [:img.oven {:src (:oven-on imgs)
+     [:img.oven {:src      (:oven-on imgs)
                  :on-click #(swap! state assoc-in [:rooms :kitchen :oven :active?] false)}]
      [:img.oven {:src (:oven-off imgs)
                  :on-click #(swap! state assoc-in [:rooms :kitchen :oven :active?] true)}])
@@ -42,10 +45,15 @@
    [:img.room-image {:src (:bathroom imgs)}]
    [:img {:className (str "bathroom-door" (if (:door-open? (:bathroom (:rooms @state))) "-open" "-closed"))
           :src (:door imgs)}]
-   [:img.laundry {:src (:laundry imgs)}]
+   [:div
+    [:img.laundry {:src (:laundry imgs)}]
+    [:div.whites (str (:whites (:laundry (:bathroom (:rooms @state)))) "%")]
+    [:div.colors (str (:colors (:laundry (:bathroom (:rooms @state)))) "%")]]
    (if (:active? (:washing-machine (:bathroom (:rooms @state))))
-     [:img.wash {:src (:wash-on imgs)
-                 :on-click #(swap! state assoc-in [:rooms :bathroom :washing-machine :active?] false)}]
+     [:div
+      [:img.wash {:src      (:wash-on imgs)
+                       :on-click #(swap! state assoc-in [:rooms :bathroom :washing-machine :active?] false)}]
+      [:div.wash-time (str "0:" (:time-remaining (:washing-machine (:bathroom (:rooms @state)))))]]
      [:img.wash {:src (:wash-off imgs)
                  :on-click #(swap! state assoc-in [:rooms :bathroom :washing-machine :active?] true)}])
    [:img.lightswitch-bath {:src (:lightswitch-bath imgs)
@@ -131,6 +139,12 @@
     [:div.temp (:current (:temperature (:livingroom (:rooms @state))))]
     [:div.set-temp (:set-to (:temperature (:livingroom (:rooms @state))))]]])
 
+(defn food []
+  [:div {:className "row food"}
+   [:div.food-header "Items needed to stock the fridge"]
+   [:ul
+    (for [item (:fridge (:kitchen (:rooms @state)))] [:li item])]])
+
 (defn simulation []
   [:div {:className "row"}
    (if (:simulation-running? @state)
@@ -149,59 +163,74 @@
     [:button {:className "two columns" :on-click #(swap! state assoc :view :livingroom)} "Living Room"]
     [:button {:className "two columns" :on-click #(swap! state assoc :view :kitchen)} "Kitchen"]
     [:button {:className "two columns" :on-click #(swap! state assoc :view :bathroom)} "Bathroom"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :garage)} "Garage"]]
+    [:button {:className "two columns" :on-click #(swap! state assoc :view :garage)} "Garage"]
+    [:button {:className "two columns" :on-click #(swap! state assoc :view :hall)} "Hall"]]
    [:div {:className "row nav"}
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :hall)} "Hall"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :bedroom)} "Bedroom"]]])
+    [:button {:className "two columns" :on-click #(swap! state assoc :view :bedroom)} "Bedroom"]
+    [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
+    [:button {:className "two columns" :on-click #()} "Diagnostics"]
+    [:button {:className "two columns" :on-click #()} "Weather"]
+    [:button {:className "two columns" :on-click #()} "Energy"]]])
+
+(defn heads-up-on-click-handler []
+  )
+
+(defn heads-up-display []
+  )
 
 (defn home-page []
-   (cond
-    (= :home (:view @state))
-    [:div.container
-     (navigation)
-     [:div.row
-      (livingroom-nw)
-      (livingroom-ne)
-      (kitchen "")]
-     [:div.row
-      (livingroom-sw)
-      (livingroom-se)
-      (bathroom)]
-     [:div.row
-      (garage)
-      (hall)
-      (bedroom)]]
-    (= :kitchen (:view @state))
-    [:div.container
-     (navigation)
-     (kitchen "-single")]
-    (= :bathroom (:view @state))
-    [:div.container
-     (navigation)
-     (bathroom)]
-    (= :bedroom (:view @state))
-    [:div.container
-     (navigation)
-     (bedroom)]
-    (= :garage (:view @state))
-    [:div.container
-     (navigation)
-     (garage)]
-    (= :hall (:view @state))
-    [:div.container
-     (navigation)
-     (hall)]
-    (= :livingroom (:view @state))
-    [:div.container
-     (navigation)
-     [:div.row
-      (livingroom-nw)
-      (livingroom-ne)
-      [:div.room]]
-     [:div.row
-      (livingroom-sw)
-      (livingroom-se)
-      [:div.room]]]))
+  (let [view (:view @state)]
+    (cond
+      (= :home view)
+      [:div.container
+       (navigation)
+       [:div.row
+        (livingroom-nw)
+        (livingroom-ne)
+        (kitchen "")]
+       [:div.row
+        (livingroom-sw)
+        (livingroom-se)
+        (bathroom)]
+       [:div.row
+        (garage)
+        (hall)
+        (bedroom)]]
+      (= :kitchen view)
+      [:div.container
+       (navigation)
+       (kitchen "-single")]
+      (= :bathroom view)
+      [:div.container
+       (navigation)
+       (bathroom)]
+      (= :bedroom view)
+      [:div.container
+       (navigation)
+       (bedroom)]
+      (= :garage view)
+      [:div.container
+       (navigation)
+       (garage)]
+      (= :hall view)
+      [:div.container
+       (navigation)
+       (hall)]
+      (= :livingroom view)
+      [:div.container
+       (navigation)
+       [:div.row
+        (livingroom-nw)
+        (livingroom-ne)
+        [:div.room]]
+       [:div.row
+        (livingroom-sw)
+        (livingroom-se)
+        [:div.room]]]
+      (= :food view)
+      [:div.container
+       (navigation)
+       (food)])))
 
 (swap! state assoc :view :home)
 

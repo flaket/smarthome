@@ -1,36 +1,36 @@
 (ns smarthome.data)
 
 (def initial-state
-  {:rooms         {:livingroom {:lights-off? false
-                                :temperature {:current 20, :set-to 20}
-                                :tv-on?      false
-                                :radio-on?   false}
-                   :kitchen    {:stove          {:active? false, :temp nil}
-                                :oven           {:active? false, :temp nil}
-                                :coffee-machine {:active? false, :brew-complete? false}
-                                :dish-washer    {:active? false, :time-remaining nil}
-                                :lights-off?    false}
-                   :bathroom   {:door-open?      true
-                                :lights-off?     false
-                                :washing-machine {:active? false, :time-remaining nil}
-                                :laundry         {:whites-full? false
-                                                  :colors-full? false}
-                                :temperature     {:current 20, :set-to 20}}
-                   :garage     {:port-closed? true
-                                :car-in?      true
-                                :lights-off?  false
-                                :temperature  {:current 20, :set-to 20}}
-                   :hall       {:lights-off?        false
-                                :front-door-locked? true}
-                   :bedroom    {:door-open?  true
-                                :lights-off? false
-                                :temperature {:current 16, :set-to 16}}}
-   :time          nil
-   :time-of-day   :morning                                  ;morning/day/evening/night
-   :weather       :clear                                    ;clear/cloudy/rain/snow
-   :user-location {:indoor :kitchen, :coordinates [63.433639 10.392072]}
-   :user-profile  {}
-   :view :home                                              ;home/livingroom/kitchen/bathroom/bedroom/garage/hall/..
+  {:rooms              {:livingroom {:lights-off? false
+                                     :temperature {:current 20, :set-to 20}
+                                     :tv-on?      false
+                                     :radio-on?   false}
+                        :kitchen    {:stove       {:active? false, :temp nil}
+                                     :oven        {:active? false, :temp nil}
+                                     :dish-washer {:active? false, :time-remaining 10}
+                                     :fridge      ["Eggs" "Bacon" "Salad" "Tomatoes" "Almonds" "Avocado"]
+                                     :lights-off? false}
+                        :bathroom   {:door-open?      true
+                                     :lights-off?     false
+                                     :washing-machine {:active? false, :time-remaining 55}
+                                     :laundry         {:whites 24
+                                                       :colors 90}
+                                     :temperature     {:current 20, :set-to 20}}
+                        :garage     {:port-closed? true
+                                     :car-in?      true
+                                     :lights-off?  false
+                                     :temperature  {:current 20, :set-to 20}}
+                        :hall       {:lights-off?        false
+                                     :front-door-locked? true}
+                        :bedroom    {:door-open?  true
+                                     :lights-off? false
+                                     :temperature {:current 16, :set-to 16}}}
+   :weather            {:current [:clear 15], :forecast [:cloudy 12]}
+   :user-location      :kitchen                             ; a room / out
+   :user-profile       {}
+   :view               :home
+   ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall
+   ;  food(fridge)/diagnostics/weather/laundry/dish/washing/
    :simulation-running false})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
