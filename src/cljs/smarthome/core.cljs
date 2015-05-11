@@ -8,10 +8,12 @@
               [smarthome.data :refer [initial-state imgs]])
     (:import goog.History))
 
+(enable-console-print!)
+
 (def state (atom initial-state))
 
 ;; -------------------------
-(defn kitchen [s]
+(defn kitchen []
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
    [:img.room-image {:src (:kitchen imgs)}]
    [:img.fridge {:src (:fridge imgs)
@@ -170,69 +172,50 @@
     [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
     [:button {:className "two columns" :on-click #()} "Diagnostics"]
     [:button {:className "two columns" :on-click #()} "Weather"]
-    [:button {:className "two columns" :on-click #()} "Energy"]]])
+    [:button {:className "two columns" :on-click #()} "Energy"]
+    [:button {:className "two columns" :on-click #(print @state)} "Print state"]]])
 
-(defn heads-up-on-click-handler []
-  )
-
-(defn heads-up-display []
-  )
+(defn scenario []
+  [:div.row
+   [:div {:className "twelve columns food food-header"}
+    "SCENARIO-TEXT.."]])
 
 (defn home-page []
   (let [view (:view @state)]
-    (cond
-      (= :home view)
-      [:div.container
-       (navigation)
-       [:div.row
-        (livingroom-nw)
-        (livingroom-ne)
-        (kitchen "")]
-       [:div.row
-        (livingroom-sw)
-        (livingroom-se)
-        (bathroom)]
-       [:div.row
-        (garage)
-        (hall)
-        (bedroom)]]
-      (= :kitchen view)
-      [:div.container
-       (navigation)
-       (kitchen "-single")]
-      (= :bathroom view)
-      [:div.container
-       (navigation)
-       (bathroom)]
-      (= :bedroom view)
-      [:div.container
-       (navigation)
-       (bedroom)]
-      (= :garage view)
-      [:div.container
-       (navigation)
-       (garage)]
-      (= :hall view)
-      [:div.container
-       (navigation)
-       (hall)]
-      (= :livingroom view)
-      [:div.container
-       (navigation)
-       [:div.row
-        (livingroom-nw)
-        (livingroom-ne)
-        [:div.room]]
-       [:div.row
-        (livingroom-sw)
-        (livingroom-se)
-        [:div.room]]]
-      (= :food view)
-      [:div.container
-       (navigation)
-       (food)])))
-
-(swap! state assoc :view :home)
+    [:div.container
+     (navigation)
+     (cond
+       (= :kitchen view) (kitchen)
+       (= :bathroom view) (bathroom)
+       (= :bedroom view) (bedroom)
+       (= :garage view) (garage)
+       (= :hall view) (hall)
+       (= :food view) (food)
+       (= :home view)
+       [:div
+        [:div.row
+         (livingroom-nw)
+         (livingroom-ne)
+         (kitchen)]
+        [:div.row
+         (livingroom-sw)
+         (livingroom-se)
+         (bathroom)]
+        [:div.row
+         (garage)
+         (hall)
+         (bedroom)]]
+       (= :livingroom view)
+       [:div
+        [:div.row
+         (livingroom-nw)
+         (livingroom-ne)
+         [:div.room]]
+        [:div.row
+         (livingroom-sw)
+         (livingroom-se)
+         [:div.room]]])
+     (when (:simulation-running? @state) (scenario))]))
 
 ;; -------------------------
 ;; Routes

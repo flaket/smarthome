@@ -30,8 +30,9 @@
    :user-profile       {}
    :view               :home
    ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall
-   ;  food(fridge)/diagnostics/weather/laundry/dish/washing/
-   :simulation-running false})
+   ;  food/diagnostics/weather
+   :simulation-running false
+   :scenario nil})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
            :living-ne          "../assets/livingroom-ne.jpg"
