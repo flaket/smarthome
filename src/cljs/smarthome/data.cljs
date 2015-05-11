@@ -26,11 +26,15 @@
                                      :lights-off? false
                                      :temperature {:current 16, :set-to 16}}}
    :weather            {:current [:clear 15], :forecast [:cloudy 12]}
+   :time-of-day :morning                                    ;morning/afternoon/evening/night
    :user-location      :kitchen                             ; a room / out
    :user-profile       {}
+   :diagnostics {:fire-alarm-on? false
+                 :burglary-alarm-on? false
+                 :pipes-condition :good
+                 :electrical-condition :good}
    :view               :home
-   ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall
-   ;  food/diagnostics/weather
+   ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall/food/diagnostics/weather
    :simulation-running false
    :scenario nil})
 
