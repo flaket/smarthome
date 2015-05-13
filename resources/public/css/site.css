@@ -2,8 +2,8 @@ body {
   font-family: 'Helvetica Neue', Verdana, Helvetica, Arial, sans-serif;
   max-width: 1000px;
   margin: 0 auto;
-  padding-top: 72px;
-  padding-bottom: 72px;
+  padding-top: 52px;
+  padding-bottom: 52px;
   -webkit-font-smoothing: antialiased;
   font-size: 1.125em;
   background-color: #222222;
@@ -269,4 +269,8 @@ body {
 
 .food-header {
     font-size: 150%;
+}
+
+.sim {
+   padding-top: 20px;
 }

@@ -8,8 +8,6 @@
               [smarthome.data :refer [initial-state imgs]])
     (:import goog.History))
 
-(enable-console-print!)
-
 (def state (atom initial-state))
 
 ;; -------------------------
@@ -147,19 +145,8 @@
    [:ul
     (for [item (:fridge (:kitchen (:rooms @state)))] [:li item])]])
 
-(defn simulation []
-  [:div {:className "row"}
-   (if (:simulation-running? @state)
-     [:button {:className "twelve columns"
-               :on-click  #(swap! state assoc :simulation-running? false)}
-      (str "Simulation Running")]
-     [:button {:className "button-primary twelve columns"
-               :on-click  #(swap! state assoc :simulation-running? true)}
-      (str "Simulation Paused")])])
-
 (defn navigation []
   [:div
-   (simulation)
    [:div {:className "row nav"}
     [:button {:className "two columns" :on-click #(swap! state assoc :view :home)} "Home"]
     [:button {:className "two columns" :on-click #(swap! state assoc :view :livingroom)} "Living Room"]
@@ -172,13 +159,33 @@
     [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
     [:button {:className "two columns" :on-click #()} "Diagnostics"]
     [:button {:className "two columns" :on-click #()} "Weather"]
-    [:button {:className "two columns" :on-click #()} "Energy"]
-    [:button {:className "two columns" :on-click #(print @state)} "Print state"]]])
+    [:button {:className "two columns" :on-click #()} "Energy"]]])
 
-(defn scenario []
-  [:div.row
-   [:div {:className "twelve columns food food-header"}
-    "SCENARIO-TEXT.."]])
+(defn simulation []
+  [:div {:className "row sim"}
+   (if (:simulation-running? @state)
+     [:button {:className "button-primary four columns"
+               :on-click  #(swap! state assoc :simulation-running? false)}
+      (str "Simulation Running")]
+     [:button {:className "button-primary four columns"
+               :on-click  #(swap! state assoc :simulation-running? true)}
+      (str "Simulation Paused")])
+   (when (:simulation-running? @state)
+     [:div {:className "eight columns food food-header"}
+      "SCENARIO-TEXT.."])])
+
+(defn data-structure []
+  [:div {:className "row data"}
+   (if (:show-state? @state)
+     [:button {:className "button-primary four columns"
+               :on-click  #(swap! state assoc :show-state? false)}
+      (str "Hide Data Structure")]
+     [:button {:className "button-primary four columns"
+               :on-click  #(swap! state assoc :show-state? true)}
+      (str "Show Data Structure")])
+   (when (:show-state? @state)
+     [:div {:className "eight columns food food-header"}
+      (str @state)])])
 
 (defn home-page []
   (let [view (:view @state)]
@@ -215,7 +222,8 @@
          (livingroom-sw)
          (livingroom-se)
          [:div.room]]])
-     (when (:simulation-running? @state) (scenario))]))
+     (simulation)
+     (data-structure)]))
 
 ;; -------------------------
 ;; Routes

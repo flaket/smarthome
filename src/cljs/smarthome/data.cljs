@@ -36,6 +36,7 @@
    :view               :home
    ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall/food/diagnostics/weather
    :simulation-running false
+   :show-state? false
    :scenario nil})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
