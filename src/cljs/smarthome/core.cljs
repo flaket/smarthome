@@ -73,7 +73,7 @@
                                   (:lights-off? (:bedroom (:rooms @state)))
                                   " dark"))}
    [:img.room-image {:src (:bedroom imgs)}]
-   [:img {:className (str "bedroom-door" (if (:door-open? (:bathroom (:rooms @state))) "-open" "-closed"))
+   [:img {:className (str "bedroom-door" (if (:door-open? (:bedroom (:rooms @state))) "-open" "-closed"))
           :src (:door imgs)}]
    [:img.lightswitch-bed {:src (:lightswitch-bed imgs)
                           :on-click #(if (:lights-off? (:bedroom (:rooms @state)))
@@ -172,10 +172,10 @@
       (str "Simulation Paused")])
    (when (:simulation-running? @state)
      [:div {:className "eight columns food food-header"}
-      "SCENARIO-TEXT.."])])
+      (:text (:scenario @state))])])
 
 (defn data-structure []
-  [:div {:className "row data"}
+  [:div {:className "row"}
    (if (:show-state? @state)
      [:button {:className "button-primary four columns"
                :on-click  #(swap! state assoc :show-state? false)}
@@ -222,6 +222,7 @@
          (livingroom-sw)
          (livingroom-se)
          [:div.room]]])
+     [:div.row]
      (simulation)
      (data-structure)]))
 

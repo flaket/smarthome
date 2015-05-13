@@ -2,7 +2,7 @@
 
 (def initial-state
   {:rooms              {:livingroom {:lights-off? false
-                                     :temperature {:current 20, :set-to 20}
+                                     :temperature {:current 21, :set-to 21}
                                      :tv-on?      false
                                      :radio-on?   false}
                         :kitchen    {:stove       {:active? false, :temp nil}
@@ -15,29 +15,27 @@
                                      :washing-machine {:active? false, :time-remaining 55}
                                      :laundry         {:whites 24
                                                        :colors 90}
-                                     :temperature     {:current 20, :set-to 20}}
-                        :garage     {:port-closed? true
+                                     :temperature     {:current 19, :set-to 20}}
+                        :garage     {:port-closed? false
                                      :car-in?      true
-                                     :lights-off?  false
-                                     :temperature  {:current 20, :set-to 20}}
+                                     :lights-off?  true}
                         :hall       {:lights-off?        false
                                      :front-door-locked? true}
-                        :bedroom    {:door-open?  true
+                        :bedroom    {:door-open?  false
                                      :lights-off? false
                                      :temperature {:current 16, :set-to 16}}}
    :weather            {:current [:clear 15], :forecast [:cloudy 12]}
-   :time-of-day :morning                                    ;morning/afternoon/evening/night
-   :user-location      :kitchen                             ; a room / out
+   :time-of-day :morning
+   :user-location      :kitchen
    :user-profile       {}
    :diagnostics {:fire-alarm-on? false
                  :burglary-alarm-on? false
                  :pipes-condition :good
                  :electrical-condition :good}
    :view               :home
-   ;  home/livingroom/kitchen/bathroom/bedroom/garage/hall/food/diagnostics/weather
-   :simulation-running false
    :show-state? false
-   :scenario nil})
+   :simulation-running false
+   :scenario {:name :temp, :text "temporary text here.."}})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
            :living-ne          "../assets/livingroom-ne.jpg"
