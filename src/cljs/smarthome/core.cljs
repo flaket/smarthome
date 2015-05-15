@@ -11,9 +11,10 @@
 (def state (atom initial-state))
 
 ;; -------------------------
-(defn kitchen []
-  [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:kitchen imgs)}]
+(defn kitchen [z]
+  [:div {:className (str "room" z (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
+   [:img.room-image {:src (:kitchen imgs)
+                     :on-click #(swap! state assoc :view :kitchen)}]
    [:img.fridge {:src (:fridge imgs)
                  :on-click #(swap! state assoc :view :food)}]
    (if (:active? (:dish-washer (:kitchen (:rooms @state))))
@@ -34,15 +35,23 @@
      [:img.stove {:src (:stove-off imgs)
                   :on-click #(swap! state assoc-in [:rooms :kitchen :stove :active?] true)}])])
 
-(defn bathroom []
-  [:div {:className (str "room" (cond
+(defn temp [room]
+  [:div
+   [:div.temp {:on-click #(swap! state update-in [:rooms room :temperature :set-to] dec)}
+    (:current (:temperature (room (:rooms @state))))]
+   [:div.set-temp {:on-click #(swap! state update-in [:rooms room :temperature :set-to] inc)}
+    (:set-to (:temperature (room (:rooms @state))))]])
+
+(defn bathroom [z]
+  [:div {:className (str "room" z (cond
                                   (and (:door-open? (:bathroom (:rooms @state)))
                                        (:lights-off? (:bathroom (:rooms @state)))
                                        (not (:lights-off? (:livingroom (:rooms @state)))))
                                   " dim"
                                   (:lights-off? (:bathroom (:rooms @state)))
                                   " dark"))}
-   [:img.room-image {:src (:bathroom imgs)}]
+   [:img.room-image {:src (:bathroom imgs)
+                     :on-click #(swap! state assoc :view :bathroom)}]
    [:img {:className (str "bathroom-door" (if (:door-open? (:bathroom (:rooms @state))) "-open" "-closed"))
           :src (:door imgs)}]
    [:div
@@ -60,47 +69,48 @@
                            :on-click #(if (:lights-off? (:bathroom (:rooms @state)))
                                        (swap! state assoc-in [:rooms :bathroom :lights-off?] false)
                                        (swap! state assoc-in [:rooms :bathroom :lights-off?] true))}]
-   [:div {:on-click #(swap! state update-in [:rooms :bathroom :temperature :set-to] inc)}
-    [:div.temp (:current (:temperature (:bathroom (:rooms @state))))]
-    [:div.set-temp (:set-to (:temperature (:bathroom (:rooms @state))))]]])
+   (temp :bathroom)])
 
-(defn bedroom []
-  [:div {:className (str "room" (cond
+(defn bedroom [z]
+  [:div {:className (str "room" z (cond
                                   (and (:door-open? (:bedroom (:rooms @state)))
                                        (:lights-off? (:bedroom (:rooms @state)))
                                        (not (:lights-off? (:livingroom (:rooms @state)))))
                                   " dim"
                                   (:lights-off? (:bedroom (:rooms @state)))
                                   " dark"))}
-   [:img.room-image {:src (:bedroom imgs)}]
+   [:img.room-image {:src (:bedroom imgs)
+                     :on-click #(swap! state assoc :view :bedroom)}]
    [:img {:className (str "bedroom-door" (if (:door-open? (:bedroom (:rooms @state))) "-open" "-closed"))
           :src (:door imgs)}]
    [:img.lightswitch-bed {:src (:lightswitch-bed imgs)
                           :on-click #(if (:lights-off? (:bedroom (:rooms @state)))
                                       (swap! state assoc-in [:rooms :bedroom :lights-off?] false)
                                       (swap! state assoc-in [:rooms :bedroom :lights-off?] true))}]
-   [:div {:on-click #(swap! state update-in [:rooms :bedroom :temperature :set-to] inc)}
-    [:div.temp (:current (:temperature (:bedroom (:rooms @state))))]
-    [:div.set-temp (:set-to (:temperature (:bedroom (:rooms @state))))]]])
+   (temp :bedroom)])
 
-(defn hall []
-  [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:hall imgs)}]
+(defn hall [z]
+  [:div {:className (str "room" z (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
+   [:img.room-image {:src (:hall imgs)
+                     :on-click #(swap! state assoc :view :hall)}]
    (if (:front-door-locked? (:hall (:rooms @state)))
      [:img.front-door {:src (:frontdoor-closed imgs)
                        :on-click #(swap! state assoc-in [:rooms :hall :front-door-locked?] false)}]
      [:img.front-door {:src (:frontdoor-open imgs)
                        :on-click #(swap! state assoc-in [:rooms :hall :front-door-locked?] true)}])])
 
-(defn garage []
-  [:div {:className (str "room" (when (:lights-off? (:garage (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:garage imgs)
-                     :on-click  #(swap! state assoc-in [:rooms :garage :port-closed?] true)}]
+(defn garage [z]
+  [:div {:className (str "room" z (when (:lights-off? (:garage (:rooms @state))) " dark"))}
+   [:img {:className "room-image"
+                     :src (:garage imgs)
+          :on-click #(swap! state assoc :view :garage)}]
    (when (:car-in? (:garage (:rooms @state))) [:img.car {:src (:car imgs)}])
-   (when (:port-closed? (:garage (:rooms @state)))
+   (if (:port-closed? (:garage (:rooms @state)))
      [:img {:className "garage-port"
             :src       (:garage-port imgs)
-            :on-click  #(swap! state assoc-in [:rooms :garage :port-closed?] false)}])
+            :on-click  #(swap! state assoc-in [:rooms :garage :port-closed?] false)}]
+     [:img {:className "garage-port"
+            :on-click  #(swap! state assoc-in [:rooms :garage :port-closed?] true)}])
    [:img.lightswitch-garage {:src (:lightswitch-garage imgs)
                              :on-click #(if (:lights-off? (:garage (:rooms @state)))
                                          (swap! state assoc-in [:rooms :garage :lights-off?] false)
@@ -108,11 +118,13 @@
 
 (defn livingroom-nw []
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:living-nw imgs)}]])
+   [:img.room-image {:src (:living-nw imgs)
+                     :on-click #(swap! state assoc :view :livingroom)}]])
 
 (defn livingroom-ne []
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:living-ne imgs)}]
+   [:img.room-image {:src (:living-ne imgs)
+                     :on-click #(swap! state assoc :view :livingroom)}]
    [:img.lightswitch-living {:src      (:lightswitch-living imgs)
                              :on-click #(if (:lights-off? (:livingroom (:rooms @state)))
                                          (swap! state assoc-in [:rooms :livingroom :lights-off?] false)
@@ -120,7 +132,8 @@
 
 (defn livingroom-sw []
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:living-sw imgs)}]
+   [:img.room-image {:src (:living-sw imgs)
+                     :on-click #(swap! state assoc :view :livingroom)}]
    (if (:tv-on? (:livingroom (:rooms @state)))
      [:img.tv {:src (:tv-on imgs)
                :on-click #(swap! state assoc-in [:rooms :livingroom :tv-on?] false)}]
@@ -129,15 +142,14 @@
 
 (defn livingroom-se []
   [:div {:className (str "room" (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
-   [:img.room-image {:src (:living-se imgs)}]
+   [:img.room-image {:src (:living-se imgs)
+                     :on-click #(swap! state assoc :view :livingroom)}]
    (if (:radio-on? (:livingroom (:rooms @state)))
      [:img.radio-on {:src (:radio-on imgs)
                      :on-click #(swap! state assoc-in [:rooms :livingroom :radio-on?] false)}]
      [:img.radio-off {:src (:radio-off imgs)
                       :on-click #(swap! state assoc-in [:rooms :livingroom :radio-on?] true)}])
-   [:div {:on-click #(swap! state update-in [:rooms :livingroom :temperature :set-to] inc)}
-    [:div.temp (:current (:temperature (:livingroom (:rooms @state))))]
-    [:div.set-temp (:set-to (:temperature (:livingroom (:rooms @state))))]]])
+   (temp :livingroom)])
 
 (defn food []
   [:div {:className "row food"}
@@ -149,20 +161,14 @@
   [:div
    [:div {:className "row nav"}
     [:button {:className "two columns" :on-click #(swap! state assoc :view :home)} "Home"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :livingroom)} "Living Room"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :kitchen)} "Kitchen"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :bathroom)} "Bathroom"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :garage)} "Garage"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :hall)} "Hall"]]
-   [:div {:className "row nav"}
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :bedroom)} "Bedroom"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
     [:button {:className "two columns" :on-click #()} "Diagnostics"]
     [:button {:className "two columns" :on-click #()} "Weather"]
-    [:button {:className "two columns" :on-click #()} "Energy"]]])
+    [:button {:className "two columns" :on-click #()} "Energy"]
+    [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
+    ]])
 
 (defn simulation []
-  [:div {:className "row sim"}
+  [:div {:className "row"}
    (if (:simulation-running? @state)
      [:button {:className "button-primary four columns"
                :on-click  #(swap! state assoc :simulation-running? false)}
@@ -190,28 +196,16 @@
 (defn home-page []
   (let [view (:view @state)]
     [:div.container
+     (data-structure)
+     (simulation)
      (navigation)
      (cond
-       (= :kitchen view) (kitchen)
-       (= :bathroom view) (bathroom)
-       (= :bedroom view) (bedroom)
-       (= :garage view) (garage)
-       (= :hall view) (hall)
+       (= :kitchen view) (kitchen " zoom")
+       (= :bathroom view) (bathroom " zoom")
+       (= :bedroom view) (bedroom " zoom")
+       (= :garage view) (garage " zoom")
+       (= :hall view) (hall " zoom")
        (= :food view) (food)
-       (= :home view)
-       [:div
-        [:div.row
-         (livingroom-nw)
-         (livingroom-ne)
-         (kitchen)]
-        [:div.row
-         (livingroom-sw)
-         (livingroom-se)
-         (bathroom)]
-        [:div.row
-         (garage)
-         (hall)
-         (bedroom)]]
        (= :livingroom view)
        [:div
         [:div.row
@@ -221,10 +215,22 @@
         [:div.row
          (livingroom-sw)
          (livingroom-se)
-         [:div.room]]])
-     [:div.row]
-     (simulation)
-     (data-structure)]))
+         [:div.room]]]
+       (= :home view)
+       [:div
+        [:div.row
+         (livingroom-nw)
+         (livingroom-ne)
+         (kitchen "")]
+        [:div.row
+         (livingroom-sw)
+         (livingroom-se)
+         (bathroom "")]
+        [:div.row
+         (garage "")
+         (hall "")
+         (bedroom "")]]
+       )]))
 
 ;; -------------------------
 ;; Routes

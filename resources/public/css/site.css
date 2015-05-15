@@ -271,6 +271,7 @@ body {
     font-size: 150%;
 }
 
-.sim {
-   padding-top: 20px;
+.zoom {
+   transform: scale(2.6) translate(77px,77px);
 }
+
