@@ -25,17 +25,18 @@
                                      :lights-off? false
                                      :temperature {:current 16, :set-to 16}}}
    :weather            {:current [:rain 10 "10:05"], :forecast-1 [:thunder 8 "13:05"], :forecast-2 [:thunder 7 "16:05"]}
-   :time-of-day :morning
-   :user-location      :kitchen
-   :user-profile       {}
-   :diagnostics {:fire-alarm-on? false
-                 :burglary-alarm-on? false
-                 :pipes-condition :good
-                 :electrical-condition :good}
+   :diagnostics        {:smoke-detector-batteries :ok       ;ok/low/empty
+                        :fire-alarm      :on              ;on/off/activated!
+                        :burglary-alarm   :off               ;on/off/activated!
+                        :pipes      :ok                     ;ok/faulty
+                        :electrical :ok}                    ;ok/faulty
    :view               :home
-   :show-state? false
+   :show-state?        false
+   :time-of-day        :morning
+   :user               {:current-location :out
+                        :last-view        :home}
    :simulation-running false
-   :scenario {:name :temp, :text "temporary text here.."}})
+   :scenario           {:name :temp, :text "temporary text here.."}})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
            :living-ne          "../assets/livingroom-ne.jpg"
@@ -51,7 +52,7 @@
            :dish-off           "../assets/dish-off.jpg"
            :oven-on            "../assets/oven-on.jpg"
            :oven-off           "../assets/oven-off.jpg"
-           :stove-on           "../assets/stove-on.@jpg"
+           :stove-on           "../assets/stove-on.jpg"
            :stove-off          "../assets/stove-off.jpg"
            :tv-on              "../assets/tv-on.gif"
            :tv-off             "../assets/tv-off.jpg"
@@ -70,8 +71,8 @@
            :lightswitch-bath   "../assets/lightswitch-bath.jpg"
            :lightswitch-bed    "../assets/lightswitch-bed.jpg"
            :sunny              "../assets/weather_sun.png"
-           :sunny-cloudy   "../assets/weather_suncloud.png"
-           :cloudy      "../assets/weather_cloud.png"
-           :rain       "../assets/weather_rain.png"
-           :snow       "../assets/weather_snow.png"
-           :thunder    "../assets/weather_thunder.png"})
+           :sunny-cloudy       "../assets/weather_suncloud.png"
+           :cloudy             "../assets/weather_cloud.png"
+           :rain               "../assets/weather_rain.png"
+           :snow               "../assets/weather_snow.png"
+           :thunder            "../assets/weather_thunder.png"})

@@ -262,12 +262,12 @@ body {
     transform: translate(28px,-7px) rotate(-45deg);
 }
 
-.food {
+.text {
     color: rgb(200,200,200);
     font-size: 120%;
 }
 
-.food-header {
+.text-header {
     font-size: 150%;
 }
 
@@ -280,3 +280,15 @@ body {
     height: 100%;
 }
 
+.on {
+    color: green;
+}
+
+.off {
+    color: yellow;
+}
+
+.warning {
+    color: red;
+    font-size: 200%
+}
