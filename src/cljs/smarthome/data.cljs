@@ -24,7 +24,7 @@
                         :bedroom    {:door-open?  false
                                      :lights-off? false
                                      :temperature {:current 16, :set-to 16}}}
-   :weather            {:current [:clear 15], :forecast [:cloudy 12]}
+   :weather            {:current [:rain 10 "10:05"], :forecast-1 [:thunder 8 "13:05"], :forecast-2 [:thunder 7 "16:05"]}
    :time-of-day :morning
    :user-location      :kitchen
    :user-profile       {}
@@ -51,7 +51,7 @@
            :dish-off           "../assets/dish-off.jpg"
            :oven-on            "../assets/oven-on.jpg"
            :oven-off           "../assets/oven-off.jpg"
-           :stove-on           "../assets/stove-on.jpg"
+           :stove-on           "../assets/stove-on.@jpg"
            :stove-off          "../assets/stove-off.jpg"
            :tv-on              "../assets/tv-on.gif"
            :tv-off             "../assets/tv-off.jpg"
@@ -68,4 +68,10 @@
            :lightswitch-living "../assets/lightswitch-living.jpg"
            :lightswitch-garage "../assets/lightswitch-garage.jpg"
            :lightswitch-bath   "../assets/lightswitch-bath.jpg"
-           :lightswitch-bed    "../assets/lightswitch-bed.jpg"})
+           :lightswitch-bed    "../assets/lightswitch-bed.jpg"
+           :sunny              "../assets/weather_sun.png"
+           :sunny-cloudy   "../assets/weather_suncloud.png"
+           :cloudy      "../assets/weather_cloud.png"
+           :rain       "../assets/weather_rain.png"
+           :snow       "../assets/weather_snow.png"
+           :thunder    "../assets/weather_thunder.png"})
