@@ -5,13 +5,61 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [cljsjs.react :as react]
+            [cljs.core.async :refer [chan close! <!]]
             [smarthome.data :refer [initial-state imgs]])
+  (:require-macros
+    [cljs.core.async.macros :as m :refer [go-loop]])
   (:import goog.History))
+
+(defn timeout [ms]
+  (let [c (chan)]
+    (js/setTimeout (fn [] (close! c)) ms)
+    c))
 
 (def state (atom initial-state))
 
 ;; -------------------------
+;; Scenario simulations
+(defn start-simulation! []
+  (go-loop []
+           ; fire alarm
+           (reset! state initial-state)
+           (swap! state assoc :scenario "A fire has broken out and the fire alarm goes off!")
+           (<! (timeout 5000))
+           (swap! state assoc-in [:diagnostics :fire-alarm] :activated!)
+           (swap! state assoc :view :diagnostics)
+           (swap! state assoc :scenario "The graphics show that the fire alarm has been activated.")
+           (<! (timeout 8000))
 
+           ; stove still on
+           (reset! state initial-state)
+           (swap! state assoc-in [:rooms :livingroom :lights-off?] false)
+           (swap! state assoc-in [:rooms :kitchen :stove :active?] true)
+           (swap! state assoc-in [:rooms :hall :front-door-locked?] false)
+           (swap! state assoc :scenario "The inhabitant is about to leave the house..")
+           (<! (timeout 5000))
+           (swap! state assoc-in [:rooms :livingroom :lights-off?] true)
+           (swap! state assoc-in [:rooms :hall :front-door-locked?] true)
+           (swap! state assoc-in [:rooms :garage :car-in?] false)
+           (swap! state assoc :scenario "But she forgot to turn off the stove!")
+           (<! (timeout 5000))
+           (swap! state assoc :view :kitchen)
+           (swap! state assoc :scenario "The still hot oven is shown to the user.")
+           (<! (timeout 8000))
+
+           ; burglary alarm
+           (reset! state initial-state)
+           (swap! state assoc :scenario "...")
+           (swap! state assoc :scenario "The burglary detector has detected an intruder!")
+           (<! (timeout 5000))
+           (swap! state assoc-in [:diagnostics :burglary-alarm] :activated!)
+           (swap! state assoc :view :diagnostics)
+           (swap! state assoc :scenario "The graphics shows that the burglary alarm has been activated.")
+           (<! (timeout 8000))
+
+           (recur)))
+
+;; -------------------------
 (defn kitchen [z]
   [:div {:className (str "room" z (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
    [:img.room-image {:src      (:kitchen imgs)
@@ -212,39 +260,35 @@
       [:div {:className "four columns text-header"} (str f-temp " Celsius")]
       [:div {:className "four columns text-header"} (str f2-temp " Celsius")]]]))
 
-(defn simulation []
-  [:div {:className "row"}
-   (if (:simulation-running? @state)
-     [:button {:className "button-primary four columns"
-               :on-click  #(swap! state assoc :simulation-running? false)}
-      (str "Simulation Running")]
-     [:button {:className "button-primary four columns"
-               :on-click  #(swap! state assoc :simulation-running? true)}
-      (str "Simulation Paused")])
-   (when (:simulation-running? @state)
-     [:div {:className "eight columns text text-header"}
-      (:text (:scenario @state))])])
-
 (defn data-structure []
   [:div {:className "row"}
    (if (:show-state? @state)
-     [:button {:className "button-primary four columns"
+     [:button {:className "button-primary three columns"
                :on-click  #(swap! state assoc :show-state? false)}
-      (str "Hide Data Structure")]
-     [:button {:className "button-primary four columns"
+      (str "Hide data structure")]
+     [:button {:className "button-primary three columns"
                :on-click  #(swap! state assoc :show-state? true)}
-      (str "Show Data Structure")])
+      (str "Show data structure")])
    (when (:show-state? @state)
-     [:div {:className "eight columns text text-header"}
+     [:div {:className "nine columns text text-header"}
       (str @state)])])
+
+(defn simulation []
+  [:div {:className "row"}
+   [:button {:className "button-primary three columns"
+             :on-click  #(do
+                          (start-simulation!)
+                          (swap! state assoc :simulation? true))}
+    (str "Start simulation")]
+   [:div {:className "nine columns text text-header"} (:scenario @state)]])
 
 (defn navigation []
   [:div
    [:div {:className "row nav"}
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :home)} "Home"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :food)} "Food"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :diagnostics)} "Diagnostics"]
-    [:button {:className "two columns" :on-click #(swap! state assoc :view :weather)} "Weather"]]])
+    [:button {:className "three columns" :on-click #(swap! state assoc :view :home)} "Home"]
+    [:button {:className "three columns" :on-click #(swap! state assoc :view :food)} "Food"]
+    [:button {:className "three columns" :on-click #(swap! state assoc :view :diagnostics)} "Diagnostics"]
+    [:button {:className "three columns" :on-click #(swap! state assoc :view :weather)} "Weather"]]])
 
 (defn home-page []
   (let [view (:view @state)]
@@ -252,16 +296,16 @@
      (data-structure)
      (simulation)
      (navigation)
-     (cond
-       (= :kitchen view) (kitchen " zoom")
-       (= :bathroom view) (bathroom " zoom")
-       (= :bedroom view) (bedroom " zoom")
-       (= :garage view) (garage " zoom")
-       (= :hall view) (hall " zoom")
-       (= :food view) (food)
-       (= :weather view) (weather)
-       (= :diagnostics view) (diagnostics)
-       (= :home view)
+     (case view
+       :kitchen (kitchen " zoom")
+       :bathroom (bathroom " zoom")
+       :bedroom (bedroom " zoom")
+       :garage (garage " zoom")
+       :hall (hall " zoom")
+       :food (food)
+       :weather (weather)
+       :diagnostics (diagnostics)
+       :home
        [:div
         [:div.row
          (livingroom-nw)
