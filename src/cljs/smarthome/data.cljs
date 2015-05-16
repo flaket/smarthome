@@ -37,7 +37,6 @@
    :user        {:current-location :out
                  :last-view        :home
                  :at-work?         false}
-   :time-of-day :morning
    :time        "08:05"
    :scenario    "Simulation stopped."})
 
