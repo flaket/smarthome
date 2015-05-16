@@ -11,12 +11,52 @@
     [cljs.core.async.macros :as m :refer [go-loop]])
   (:import goog.History))
 
+;; -------------------------
 (defn timeout [ms]
   (let [c (chan)]
     (js/setTimeout (fn [] (close! c)) ms)
     c))
 
 (def state (atom initial-state))
+
+;; -------------------------
+;; Rules
+(defn rules []
+  ; Fire-alarm
+  (when (= :activated! (:fire-alarm (:diagnostics @state)))
+    (swap! state assoc :view :diagnostics))
+  ; Stove still on
+  (when (and (:active? (:stove (:kitchen (:rooms @state))))
+             (= :out (:current-location (:user @state))))
+    (swap! state assoc :view :kitchen))
+  ; Out -> shopping
+  (when (= :out (:current-location (:user @state)))
+    (swap! state assoc :view :food))
+  ; laundry
+  (when (and (= 100 (or (:whites (:laundry (:bathroom (:rooms @state))))
+                        (:colors (:laundry (:bathroom (:rooms @state))))))
+             (not (:at-work? (:user @state))))
+    (swap! state assoc :view :bathroom))
+  ; burglary alarm
+  (when (= :activated! (:burglary-alarm (:diagnostics @state)))
+    (swap! state assoc :view :diagnostics))
+  ; unlocked door
+  (when (and (= :out (:current-location (:user @state)))
+             (not (:front-door-locked? (:hall (:rooms @state)))))
+    (swap! state assoc :view :hall))
+  ; dishwasher finished
+  (when (and (:active? (:dish-washer (:kitchen (:rooms @state))))
+             (= 0 (:time-remaining (:dish-washer (:kitchen (:rooms @state))))))
+    (swap! state assoc :view :kitchen))
+  ; weather in the morning
+  (when (= :morning (:time-of-day @state))
+    (swap! state assoc :view :weather))
+  ; door and garage port locked at night
+  (when (= "22:00" (:time @state))
+    (do
+      (swap! state assoc-in [:rooms :garage :port-closed?] true)
+      (swap! state assoc-in [:rooms :garage :lights-off?] true)
+      (swap! state assoc-in [:rooms :hall :front-door-locked?] true))))
 
 ;; -------------------------
 ;; Scenario simulations
@@ -165,6 +205,7 @@
            (recur)))
 
 ;; -------------------------
+;; Views
 (defn kitchen [z]
   [:div {:className (str "room" z (when (:lights-off? (:livingroom (:rooms @state))) " dark"))}
    [:img.room-image {:src      (:kitchen imgs)

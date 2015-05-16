@@ -35,7 +35,10 @@
    :simulation? false
    :time-of-day :morning
    :user        {:current-location :out
-                 :last-view        :home}
+                 :last-view        :home
+                 :at-work?         false}
+   :time-of-day :morning
+   :time        "08:05"
    :scenario    "Simulation stopped."})
 
 (def imgs {:living-nw          "../assets/livingroom-nw.jpg"
