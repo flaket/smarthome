@@ -21,42 +21,48 @@
 
 ;; -------------------------
 ;; Rules
-(defn rules []
-  ; Fire-alarm
+(defn fire-alarm []
   (when (= :activated! (:fire-alarm (:diagnostics @state)))
-    (swap! state assoc :view :diagnostics))
-  ; Stove still on
+    (swap! state assoc :view :diagnostics)))
+
+(defn stove-on []
   (when (and (:active? (:stove (:kitchen (:rooms @state))))
              (= :out (:current-location (:user @state))))
-    (swap! state assoc :view :kitchen))
-  ; Out -> shopping
+    (swap! state assoc :view :kitchen)))
+
+(defn shopping []
   (when (= :out (:current-location (:user @state)))
-    (swap! state assoc :view :food))
-  ; laundry
+    (swap! state assoc :view :food)))
+
+(defn laundry []
   (when (and (= 100 (or (:whites (:laundry (:bathroom (:rooms @state))))
                         (:colors (:laundry (:bathroom (:rooms @state))))))
              (not (:at-work? (:user @state))))
-    (swap! state assoc :view :bathroom))
-  ; burglary alarm
+    (swap! state assoc :view :bathroom)))
+
+(defn burglary-alarm []
   (when (= :activated! (:burglary-alarm (:diagnostics @state)))
-    (swap! state assoc :view :diagnostics))
-  ; unlocked door
+    (swap! state assoc :view :diagnostics)))
+
+(defn unlocked-door []
   (when (and (= :out (:current-location (:user @state)))
              (not (:front-door-locked? (:hall (:rooms @state)))))
-    (swap! state assoc :view :hall))
-  ; dishwasher finished
+    (swap! state assoc :view :hall)))
+
+(defn dishwasher-finished []
   (when (and (:active? (:dish-washer (:kitchen (:rooms @state))))
              (= 0 (:time-remaining (:dish-washer (:kitchen (:rooms @state))))))
-    (swap! state assoc :view :kitchen))
-  ; weather in the morning
+    (swap! state assoc :view :kitchen)))
+
+(defn morning-weather []
   (when (= :morning (:time-of-day @state))
-    (swap! state assoc :view :weather))
-  ; door and garage port locked at night
+    (swap! state assoc :view :weather)))
+
+(defn lock-doors-at-night []
   (when (= "22:00" (:time @state))
-    (do
-      (swap! state assoc-in [:rooms :garage :port-closed?] true)
-      (swap! state assoc-in [:rooms :garage :lights-off?] true)
-      (swap! state assoc-in [:rooms :hall :front-door-locked?] true))))
+    (swap! state assoc-in [:rooms :garage :port-closed?] true)
+    (swap! state assoc-in [:rooms :garage :lights-off?] true)
+    (swap! state assoc-in [:rooms :hall :front-door-locked?] true)))
 
 ;; -------------------------
 ;; Scenario simulations
@@ -64,11 +70,11 @@
   (go-loop []
            ; fire alarm
            (reset! state initial-state)
-           (swap! state assoc :scenario "Scenario 1: A fire has broken out and the fire alarm goes off!")
+           (swap! state assoc :scenario "Scenario 1a: A fire has broken out and the fire alarm goes off!")
            (<! (timeout 4000))
            (swap! state assoc-in [:diagnostics :fire-alarm] :activated!)
-           (swap! state assoc :view :diagnostics)
-           (swap! state assoc :scenario "Scenario 1: The graphics show that the fire alarm has been activated.")
+           (fire-alarm)
+           (swap! state assoc :scenario "Scenario 1b: The graphics show that the fire alarm has been activated.")
            (<! (timeout 8000))
 
            ; stove still on
@@ -79,7 +85,7 @@
            (swap! state assoc-in [:rooms :bathroom :door-open?] true)
            (swap! state assoc-in [:rooms :bedroom :door-open?] true)
            (swap! state assoc :scenario
-                  "Scenario 2: The inhabitant has cooked and eaten breakfast, and is about to leave the house..")
+                  "Scenario 2a: The inhabitant has cooked and eaten breakfast, and is about to leave the house..")
            (<! (timeout 4000))
            (swap! state assoc-in [:rooms :livingroom :lights-off?] true)
            (swap! state assoc-in [:rooms :garage :lights-off?] true)
@@ -88,10 +94,10 @@
            (swap! state assoc-in [:rooms :hall :front-door-locked?] true)
            (swap! state assoc-in [:rooms :livingroom :radio-on?] false)
            (swap! state assoc-in [:rooms :garage :car-in?] false)
-           (swap! state assoc :scenario "Scenario 2: But she forgot to turn off the stove!")
+           (swap! state assoc :scenario "Scenario 2b: But she forgot to turn off the stove!")
            (<! (timeout 4000))
-           (swap! state assoc :view :kitchen)
-           (swap! state assoc :scenario "Scenario 2: The still hot stove is shown to the user.")
+           (stove-on)
+           (swap! state assoc :scenario "Scenario 2c: The still hot stove is shown to the user.")
            (<! (timeout 8000))
 
            ; out shopping
@@ -101,15 +107,17 @@
            (swap! state assoc-in [:rooms :bedroom :lights-off?] true)
            (swap! state assoc-in [:rooms :bathroom :lights-off?] true)
            (swap! state assoc-in [:rooms :garage :car-in?] false)
-           (swap! state assoc :scenario "Scenario 3: The user is not at home.")
+           (swap! state assoc :scenario "Scenario 3a: The inhabitant is not at home.")
            (<! (timeout 4000))
-           (swap! state assoc :view :food)
-           (swap! state assoc :scenario "Scenario 3: The shopping list of food items is shown.")
+           (shopping)
+           (swap! state assoc :scenario
+                  "Scenario 3b: When she visits the website, the shopping list is shown.")
            (<! (timeout 8000))
 
            ; laundry
            (reset! state initial-state)
-           (swap! state assoc :scenario "Scenario 4: The user has the day off and the laundry is filling up.")
+           (swap! state assoc :scenario
+                  "Scenario 4a: The inhabitatnt has the day off and the white clothes laundry is about to be full.")
            (swap! state assoc-in [:rooms :bathroom :laundry :whites] 54)
            (swap! state assoc-in [:rooms :bathroom :laundry :colors] 63)
            (<! (timeout 2000))
@@ -120,8 +128,8 @@
            (<! (timeout 2000))
            (swap! state assoc-in [:rooms :bathroom :laundry :whites] 100)
            (<! (timeout 2000))
-           (swap! state assoc :view :bathroom)
-           (swap! state assoc :scenario "Scenario 4: The laundry is full and the bathroom view is presented.")
+           (laundry)
+           (swap! state assoc :scenario "Scenario 4b: The bathroom view is presented.")
            (<! (timeout 8000))
 
            ; burglary alarm
@@ -130,18 +138,18 @@
            (swap! state assoc-in [:rooms :garage :lights-off?] true)
            (swap! state assoc-in [:rooms :bedroom :lights-off?] true)
            (swap! state assoc-in [:rooms :bathroom :lights-off?] true)
-           (swap! state assoc :scenario "Scenario 5: At nighttime, the motion detector has detected an intruder!")
+           (swap! state assoc :scenario "Scenario 5a: At nighttime, the motion detector has detected an intruder!")
            (<! (timeout 4000))
            (swap! state assoc-in [:diagnostics :burglary-alarm] :activated!)
-           (swap! state assoc :view :diagnostics)
-           (swap! state assoc :scenario "Scenario 5: The graphics shows that the burglary alarm has been activated.")
+           (burglary-alarm)
+           (swap! state assoc :scenario "Scenario 5b: The graphics shows that the burglary alarm has been activated.")
            (<! (timeout 8000))
 
            ; unlocked door
            (reset! state initial-state)
            (swap! state assoc-in [:rooms :hall :front-door-locked?] true)
            (swap! state assoc-in [:rooms :livingroom :tv-on?] true)
-           (swap! state assoc :scenario "Scenario 6: The inhabitant is about to leave the house..")
+           (swap! state assoc :scenario "Scenario 6a: The inhabitant is about to leave the house..")
            (<! (timeout 4000))
            (swap! state assoc-in [:rooms :livingroom :lights-off?] true)
            (swap! state assoc-in [:rooms :garage :lights-off?] true)
@@ -150,26 +158,30 @@
            (swap! state assoc-in [:rooms :hall :front-door-locked?] false)
            (swap! state assoc-in [:rooms :livingroom :tv-on?] false)
            (swap! state assoc-in [:rooms :garage :car-in?] false)
-           (swap! state assoc :scenario "Scenario 6: He forgot to lock the front door!")
+           (swap! state assoc :scenario "Scenario 6b: He forgot to lock the front door!")
            (<! (timeout 4000))
-           (swap! state assoc :view :hall)
-           (swap! state assoc :scenario "Scenario 6: The hall view with the front door is presented.")
+           (unlocked-door)
+           (swap! state assoc :scenario "Scenario 6c: The hall view with the unlocked front door is shown.")
            (<! (timeout 8000))
 
            ; dishwasher finished
            (reset! state initial-state)
-           (swap! state assoc :scenario "Scenario 7: The dishwasher is almost done..")
+           (swap! state assoc :scenario "Scenario 7a: The dishwasher is almost done..")
            (swap! state assoc-in [:rooms :kitchen :dish-washer :active?] true)
-           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 9)
-           (<! (timeout 2000))
-           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 6)
-           (<! (timeout 2000))
+           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 5)
+           (<! (timeout 1000))
+           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 4)
+           (<! (timeout 1000))
            (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 3)
-           (<! (timeout 2000))
+           (<! (timeout 1000))
+           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 2)
+           (<! (timeout 1000))
+           (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 1)
+           (<! (timeout 1000))
            (swap! state assoc-in [:rooms :kitchen :dish-washer :time-remaining] 0)
-           (<! (timeout 2000))
-           (swap! state assoc :view :kitchen)
-           (swap! state assoc :scenario "Scenario 7: The dishwasher is done and the kitchen view is presented.")
+           (<! (timeout 500))
+           (dishwasher-finished)
+           (swap! state assoc :scenario "Scenario 7b: The dishwasher is done and the kitchen view is presented.")
            (<! (timeout 8000))
 
            ; weather in the morning
@@ -179,27 +191,26 @@
            (swap! state assoc-in [:rooms :bedroom :lights-off?] true)
            (swap! state assoc-in [:rooms :bathroom :lights-off?] true)
            (swap! state assoc-in [:rooms :garage :car-in?] false)
-           (swap! state assoc :scenario "Scenario 8: The user prefers to see the weather in the morning.")
+           (swap! state assoc :scenario "Scenario 8a: The inhabitant prefers to see the weather in the morning.")
            (<! (timeout 2000))
            (swap! state assoc-in [:rooms :bedroom :lights-off?] false)
            (<! (timeout 2000))
-           (swap! state assoc :view :weather)
-           (swap! state assoc :scenario "Scenario 8: The weather view is presented.")
+           (morning-weather)
+           (swap! state assoc :scenario "Scenario 8b: The weather view is presented.")
            (<! (timeout 8000))
 
            ; door and garage port locked at night
            (reset! state initial-state)
-           (swap! state assoc-in [:rooms :garage-port :port-closed?] false)
+           (swap! state assoc-in [:rooms :garage :port-closed?] false)
            (swap! state assoc-in [:rooms :hall :front-door-locked?] false)
+           (swap! state assoc :time "22:00")
            (swap! state assoc :scenario
-                  "Scenario 9: The user has created a rule,
+                  "Scenario 9a: The inhabitant has created a rule,
                   stating that the front door and the garage port shall be automatically locked at 22:00.")
            (<! (timeout 3000))
-           (swap! state assoc-in [:rooms :garage :port-closed?] true)
-           (swap! state assoc-in [:rooms :garage :lights-off?] true)
-           (swap! state assoc-in [:rooms :hall :front-door-locked?] true)
+           (lock-doors-at-night)
            (<! (timeout 2000))
-           (swap! state assoc :scenario "Scenario 9: At 22:00, the front door and garage port are locked.")
+           (swap! state assoc :scenario "Scenario 9b: At 22:00, the front door and garage port are locked.")
            (<! (timeout 8000))
 
            (recur)))
