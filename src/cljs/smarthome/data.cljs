@@ -1,30 +1,30 @@
 (ns smarthome.data)
 
 (def initial-state
-  {:rooms       {:livingroom {:lights-off? true
+  {:rooms       {:livingroom {:lights-off? false
                               :temperature {:current 21, :set-to 21}
                               :tv-on?      false
                               :radio-on?   false}
                  :kitchen    {:stove       {:active? false, :temp nil}
                               :oven        {:active? false, :temp nil}
-                              :dish-washer {:active? false, :time-remaining 10}
+                              :dish-washer {:active? false, :time-remaining 45}
                               :fridge      ["Eggs" "Bacon" "Salad" "Tomatoes" "Almonds" "Avocado"]
-                              :lights-off? true}
+                              :lights-off? false}
                  :bathroom   {:door-open?      false
-                              :lights-off?     true
+                              :lights-off?     false
                               :washing-machine {:active? false, :time-remaining 55}
                               :laundry         {:whites 24
                                                 :colors 90}
                               :temperature     {:current 19, :set-to 20}}
                  :garage     {:port-closed? true
                               :car-in?      true
-                              :lights-off?  true}
-                 :hall       {:lights-off?        true
+                              :lights-off?  false}
+                 :hall       {:lights-off?        false
                               :front-door-locked? true}
                  :bedroom    {:door-open?  false
-                              :lights-off? true
+                              :lights-off? false
                               :temperature {:current 16, :set-to 16}}}
-   :weather     {:current [:rain 10 "10:05"], :forecast-1 [:thunder 8 "13:05"], :forecast-2 [:thunder 7 "16:05"]}
+   :weather     {:current [:rain 10 "08:05"], :forecast-1 [:sunny-cloudy 10 "11:05"], :forecast-2 [:sunny 14 "14:05"]}
    :diagnostics {:smoke-detector-batteries :ok       ;ok/low/empty
                  :fire-alarm               :on              ;on/off/activated!
                  :burglary-alarm           :on               ;on/off/activated!
